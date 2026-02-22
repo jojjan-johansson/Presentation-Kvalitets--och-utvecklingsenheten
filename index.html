@@ -1,104 +1,130 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Välkommen</title>
-  <link rel="stylesheet" href="style.css" />
-  <script defer src="navbar.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Välkommen</title>
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="navbar.js"></script>
 </head>
 <body>
 
-  <header>
+<header>
     <div id="navbar"></div>
-  </header>
+</header>
 
-  <main>
+<main>
     <h2>Välkommen till Kvalitets och utvecklingsenheten</h2>
 
-    <p>
-      Välj musik när du kliver in 👇
-    </p>
+    <p>Först intro. Sedan full energi. 🔥</p>
 
-    <!-- KNAPPAR -->
-    <div class="audio-controls">
-      <button class="audio-btn" id="btnTiger" type="button">▶ Eye of the tiger</button>
-      <button class="audio-btn" id="btnRocky" type="button">▶ Rocky gå</button>
-      <button class="audio-btn audio-btn--stop" id="btnStopAll" type="button">⏹ Stoppa</button>
+    <!-- Dold spelare -->
+    <audio id="player" preload="none"></audio>
+
+    <div style="margin: 1.5rem 0; display:flex; gap:10px; flex-wrap:wrap;">
+
+        <!-- INTRO + EYE -->
+        <button id="comboBtn"
+            style="background: var(--primary); color:#000; border:none; padding: 12px 16px; border-radius: 10px; font-weight: 700; cursor: pointer;">
+            ▶ Intro → Eye of the Tiger
+        </button>
+
+        <!-- ROCKY -->
+        <button id="rockyBtn"
+            style="background:#2b2b2b; color:var(--text); border:1px solid rgba(255,255,255,0.2); padding: 12px 16px; border-radius: 10px; font-weight:700; cursor:pointer;">
+            ▶ Rocky
+        </button>
+
+        <!-- STOP -->
+        <button id="stopBtn"
+            style="background:#444; color:var(--text); border:none; padding: 12px 16px; border-radius: 10px; font-weight:700; cursor:pointer;">
+            ■ Stoppa
+        </button>
+
+        <span id="status" style="align-self:center; color:rgba(241,241,241,0.8); margin-left:10px;">
+            Pausat
+        </span>
     </div>
-
-    <!-- LJUD (dolda) -->
-    <audio id="audioTiger" preload="auto">
-      <source src="audio/eye-of-the-tiger.m4a" type="audio/mp4">
-      Din webbläsare stödjer inte ljud.
-    </audio>
-
-    <audio id="audioRocky" preload="auto">
-      <source src="audio/rocky.m4a" type="audio/mp4">
-      Din webbläsare stödjer inte ljud.
-    </audio>
 
     <p><em>"Teamwork"</em></p>
 
-    <img src="img/team.png" alt="Team" style="max-width: 100%; height: auto; border-radius: 8px;" />
-  </main>
+    <img src="img/team.png" alt="Team"
+         style="max-width:100%; height:auto; border-radius:8px;" />
+</main>
 
-  <footer>
+<footer>
     <p>© 2025 Johanna Johansson – Ljusdals kommun</p>
-  </footer>
+</footer>
 
-  <script>
-    const tiger = document.getElementById("audioTiger");
-    const rocky = document.getElementById("audioRocky");
+<script>
+const player = document.getElementById("player");
+const comboBtn = document.getElementById("comboBtn");
+const rockyBtn = document.getElementById("rockyBtn");
+const stopBtn = document.getElementById("stopBtn");
+const statusEl = document.getElementById("status");
 
-    const btnTiger = document.getElementById("btnTiger");
-    const btnRocky = document.getElementById("btnRocky");
-    const btnStopAll = document.getElementById("btnStopAll");
+const comboTracks = [
+    { src: "audio/Intro.m4a", label: "Intro" },
+    { src: "audio/eye-of-the-tiger.m4a", label: "Eye of the Tiger" }
+];
 
-    function stopAll() {
-      [tiger, rocky].forEach(a => {
-        a.pause();
-        a.currentTime = 0;
-      });
-      btnTiger.textContent = "▶ Eye of the tiger";
-      btnRocky.textContent = "▶ Rocky gå";
-    }
+let currentIndex = 0;
+let mode = null;
 
-    async function togglePlay(audio, btn, otherAudio, otherBtn, label) {
-      // stoppa andra låten alltid
-      otherAudio.pause();
-      otherAudio.currentTime = 0;
-      otherBtn.textContent = `▶ ${otherBtn.dataset.label}`;
+function setStatus(text) {
+    statusEl.textContent = text;
+}
 
-      // toggla denna
-      if (!audio.paused) {
-        audio.pause();
-        btn.textContent = `▶ ${label}`;
-        return;
-      }
-
-      try {
-        await audio.play(); // måste triggas av klick (det gör vi)
-        btn.textContent = `⏸ Pausa ${label}`;
-      } catch (err) {
-        alert("Ljudet blockeras av webbläsaren. Klicka en gång på sidan och testa igen.");
+function play(src, label) {
+    player.src = src;
+    player.load();
+    player.play().then(() => {
+        setStatus("Spelar: " + label);
+    }).catch(err => {
+        setStatus("Klicka igen om ljudet blockeras.");
         console.error(err);
-      }
+    });
+}
+
+player.addEventListener("ended", () => {
+    if (mode === "combo") {
+        currentIndex++;
+        if (currentIndex < comboTracks.length) {
+            play(comboTracks[currentIndex].src, comboTracks[currentIndex].label);
+        } else {
+            mode = null;
+            currentIndex = 0;
+            setStatus("Klart ✅");
+        }
+    } else {
+        mode = null;
+        setStatus("Klart ✅");
     }
+});
 
-    btnTiger.dataset.label = "Eye of the tiger";
-    btnRocky.dataset.label = "Rocky gå";
+comboBtn.addEventListener("click", () => {
+    player.pause();
+    player.currentTime = 0;
+    currentIndex = 0;
+    mode = "combo";
+    play(comboTracks[0].src, comboTracks[0].label);
+});
 
-    btnTiger.addEventListener("click", () =>
-      togglePlay(tiger, btnTiger, rocky, btnRocky, "Eye of the tiger")
-    );
+rockyBtn.addEventListener("click", () => {
+    player.pause();
+    player.currentTime = 0;
+    mode = "rocky";
+    play("audio/Rocky.m4a", "Rocky");
+});
 
-    btnRocky.addEventListener("click", () =>
-      togglePlay(rocky, btnRocky, tiger, btnTiger, "Rocky gå")
-    );
-
-    btnStopAll.addEventListener("click", stopAll);
-  </script>
+stopBtn.addEventListener("click", () => {
+    player.pause();
+    player.currentTime = 0;
+    currentIndex = 0;
+    mode = null;
+    setStatus("Stoppad");
+});
+</script>
 
 </body>
 </html>
