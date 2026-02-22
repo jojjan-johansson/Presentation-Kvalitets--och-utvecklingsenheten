@@ -309,3 +309,33 @@ li {
   border-radius: 16px;
   box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
+
+/* =========================================
+   NYTT: FRAMTID - gör Tesla-bilden mindre
+   (ändrar inget annat)
+========================================= */
+
+/* Säkerhets-fix: Om någon annan regel försöker göra h1 vit */
+.vt-pagehead h1 {
+  color: var(--primary);
+}
+
+/* Tesla/Framtid-hero: mindre bild + centrerad */
+.future-hero img {
+  width: 100%;
+  max-width: 520px;   /* ✅ lagom stor. Vill du mindre: 480px */
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.55);
+}
+
+/* Liten text under bilden (om du använder den i HTML) */
+.future-caption {
+  margin-top: 1rem;
+  color: rgba(241,241,241,0.75);
+  font-size: 0.95rem;
+  text-align: center;
+}
