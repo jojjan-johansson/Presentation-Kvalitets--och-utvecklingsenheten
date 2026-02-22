@@ -339,3 +339,32 @@ li {
   font-size: 0.95rem;
   text-align: center;
 }
+
+.audio-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 16px 0 24px;
+}
+
+.audio-btn {
+  background: var(--primary);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.audio-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.audio-btn--stop {
+  background: #444;
+  color: var(--text);
+}

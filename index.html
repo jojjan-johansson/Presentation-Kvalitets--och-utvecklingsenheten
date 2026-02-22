@@ -1,36 +1,104 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Välkommen</title>
-    <link rel="stylesheet" href="style.css" />
-    <script defer src="navbar.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Välkommen</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="navbar.js"></script>
 </head>
 <body>
 
-    <header>
-        <div id="navbar"></div>
-    </header>
+  <header>
+    <div id="navbar"></div>
+  </header>
 
-    <main>
-        <h2>Välkommen till Kvalitets och utvecklingsenheten</h2>
-    
-        <p>
-            
-        </p>
-        
-  
-        
-        <p><em>"Teamwork"</em></p>
-    
-        <img src="img/team.png" alt="Team" style="max-width: 100%; height: auto; border-radius: 8px;" />
-    </main>
-    
+  <main>
+    <h2>Välkommen till Kvalitets och utvecklingsenheten</h2>
 
-    <footer>
-        <p>© 2025 Johanna Johansson – Ljusdals kommun</p>
-    </footer>
+    <p>
+      Välj musik när du kliver in 👇
+    </p>
+
+    <!-- KNAPPAR -->
+    <div class="audio-controls">
+      <button class="audio-btn" id="btnTiger" type="button">▶ Eye of the tiger</button>
+      <button class="audio-btn" id="btnRocky" type="button">▶ Rocky gå</button>
+      <button class="audio-btn audio-btn--stop" id="btnStopAll" type="button">⏹ Stoppa</button>
+    </div>
+
+    <!-- LJUD (dolda) -->
+    <audio id="audioTiger" preload="auto">
+      <source src="audio/eye-of-the-tiger.m4a" type="audio/mp4">
+      Din webbläsare stödjer inte ljud.
+    </audio>
+
+    <audio id="audioRocky" preload="auto">
+      <source src="audio/rocky.m4a" type="audio/mp4">
+      Din webbläsare stödjer inte ljud.
+    </audio>
+
+    <p><em>"Teamwork"</em></p>
+
+    <img src="img/team.png" alt="Team" style="max-width: 100%; height: auto; border-radius: 8px;" />
+  </main>
+
+  <footer>
+    <p>© 2025 Johanna Johansson – Ljusdals kommun</p>
+  </footer>
+
+  <script>
+    const tiger = document.getElementById("audioTiger");
+    const rocky = document.getElementById("audioRocky");
+
+    const btnTiger = document.getElementById("btnTiger");
+    const btnRocky = document.getElementById("btnRocky");
+    const btnStopAll = document.getElementById("btnStopAll");
+
+    function stopAll() {
+      [tiger, rocky].forEach(a => {
+        a.pause();
+        a.currentTime = 0;
+      });
+      btnTiger.textContent = "▶ Eye of the tiger";
+      btnRocky.textContent = "▶ Rocky gå";
+    }
+
+    async function togglePlay(audio, btn, otherAudio, otherBtn, label) {
+      // stoppa andra låten alltid
+      otherAudio.pause();
+      otherAudio.currentTime = 0;
+      otherBtn.textContent = `▶ ${otherBtn.dataset.label}`;
+
+      // toggla denna
+      if (!audio.paused) {
+        audio.pause();
+        btn.textContent = `▶ ${label}`;
+        return;
+      }
+
+      try {
+        await audio.play(); // måste triggas av klick (det gör vi)
+        btn.textContent = `⏸ Pausa ${label}`;
+      } catch (err) {
+        alert("Ljudet blockeras av webbläsaren. Klicka en gång på sidan och testa igen.");
+        console.error(err);
+      }
+    }
+
+    btnTiger.dataset.label = "Eye of the tiger";
+    btnRocky.dataset.label = "Rocky gå";
+
+    btnTiger.addEventListener("click", () =>
+      togglePlay(tiger, btnTiger, rocky, btnRocky, "Eye of the tiger")
+    );
+
+    btnRocky.addEventListener("click", () =>
+      togglePlay(rocky, btnRocky, tiger, btnTiger, "Rocky gå")
+    );
+
+    btnStopAll.addEventListener("click", stopAll);
+  </script>
 
 </body>
 </html>
