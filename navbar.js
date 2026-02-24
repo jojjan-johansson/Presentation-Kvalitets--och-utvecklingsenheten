@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     
                     <li><a href="kvalitet.html">Staben</a></li>
                     <li><a href="valteknik.html">Välfärdsteknik</a></li>
-                    <li><a href="larm.html">Larmtekniker</a></li>
                     <li><a href="mas.html">Kvalitet</a></li>
                     <li><a href="system.html">System</a></li>
                     <li><a href="treserva.html">Treserva-appen</a></li>
